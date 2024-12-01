@@ -1,10 +1,9 @@
-Este arquivo explicará como configurar, executar e testar o backend (Node.js com Express e Firebase).
-
 # InfoMural Backend
 
 Este é o backend do projeto **InfoMural**, que fornece uma API para exibir e gerenciar conteúdos no mural de informações de uma empresa.
 
 ## Tecnologias Utilizadas
+
 - **Node.js**: Ambiente de execução JavaScript.
 - **Express.js**: Framework web para Node.js.
 - **MySQL**: Banco de dados relacional para logs de atividades.
@@ -15,6 +14,7 @@ Este é o backend do projeto **InfoMural**, que fornece uma API para exibir e ge
 ## Como Configurar
 
 ### 1. Instalar Dependências
+
 Clone o repositório e navegue até a pasta `backend/`:
 
 ```bash

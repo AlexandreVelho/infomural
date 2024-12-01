@@ -7,6 +7,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const mysql = require('mysql2');
 const admin = require('firebase-admin');
+const path = require('path'); // Adicionado aqui
 
 // Configurações
 dotenv.config(); // Carrega variáveis de ambiente
@@ -27,40 +28,26 @@ const validateEnv = () => {
 };
 validateEnv();
 
-// Inicialização do Firebase
+// Inicializa o Firebase com a chave privada JSON
 admin.initializeApp({
-    credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    }),
+    credential: admin.credential.cert(
+      require(path.join(__dirname, 'secrets/firebase-credentials.json')) // Caminho corrigido
+    ),
     databaseURL: process.env.FIREBASE_DATABASE_URL,
 });
+
 console.log('Firebase inicializado com sucesso!');
 
-// Conexão com MySQL
-const db = mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-});
-db.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao MySQL:', err);
-        process.exit(1);
-    }
-    console.log('Conexão com o MySQL estabelecida com sucesso!');
-});
+// Criação do aplicativo Express
+const app = express(); // Adicionado aqui
 
-// Configuração do servidor
-const app = express();
-app.use(cors()); // Habilita CORS
+// Configurações do middleware
+app.use(cors());
 app.use(bodyParser.json());
 
 // Definição de rotas
-app.use('/api/admin', adminRoutes);
-app.use('/api/public', publicRoutes);
+app.use('/api/admin', adminRoutes); // Admin routes
+app.use('/api/public', publicRoutes); // Public routes
 
 // Tratamento de erros
 app.use((err, req, res, next) => {
