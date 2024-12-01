@@ -101,19 +101,3 @@ A estrura do projeto é dividida em backend e frontend:
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT.
-
-## Explicação do que cada seção faz
-
-* **Tecnologias Utilizadas:** Uma visão geral das tecnologias usadas no backend e frontend.
-
-* **Como Executar o Projeto:** Como configurar e rodar tanto o backend quanto o frontend localmente.
-
-* **Estrutura do Projeto:** Mostra como o código está organizado nas pastas e arquivos.
-
-* **Como Contribuir:** Instruções para desenvolvedores que desejam contribuir para o projeto.
-
-* **Dicas Gerais:** Recomendações para facilitar o desenvolvimento e o teste do projeto.
-
-* **Licença:** Se o projeto for aberto, é uma boa prática adicionar uma seção sobre a licença, indicando os direitos de uso e modificação.
-
-Esse **README.md** oferece uma visão clara e detalhada sobre o projeto como um todo, tornando mais fácil para qualquer desenvolvedor ou colaborador entender como configurar e contribuir para o projeto **InfoMural**.
