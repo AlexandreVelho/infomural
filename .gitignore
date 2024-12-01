@@ -1,0 +1,4 @@
+# Ignore arquivos de configuração
+.env
+node_modules
+secrets

@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "firebase": "^11.0.2",
+    "firebase-admin": "^13.0.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.11.5"
+  }
+}
