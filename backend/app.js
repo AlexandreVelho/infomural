@@ -1,62 +1,60 @@
 // Importação de módulos necessários
-const express = require('express');
-const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const adminRoutes = require('./routes/adminRoutes');
-const publicRoutes = require('./routes/publicRoutes');
-const mysql = require('mysql2');
-const admin = require('firebase-admin');
-const path = require('path'); // Adicionado aqui
+const express = require('express'); // Framework de servidor web
+const admin = require('firebase-admin'); // Biblioteca do Firebase Admin SDK
+const bodyParser = require('body-parser'); // Middleware para análise de corpos de requisição
+const dotenv = require('dotenv'); // Biblioteca para carregar variáveis de ambiente
+const cors = require('cors'); // Middleware para habilitar CORS (Cross-Origin Resource Sharing)
 
-// Configurações
-dotenv.config(); // Carrega variáveis de ambiente
+const mysql = require('mysql2'); // Módulo para conexão com o banco de dados MySQL
 
-// Validação das variáveis de ambiente
-const validateEnv = () => {
-    const requiredVars = ['PORT', 'MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_DATABASE', 
-                          'FIREBASE_API_KEY', 'FIREBASE_AUTH_DOMAIN', 'FIREBASE_DATABASE_URL',
-                          'FIREBASE_PROJECT_ID', 'FIREBASE_STORAGE_BUCKET', 'FIREBASE_MESSAGING_SENDER_ID',
-                          'FIREBASE_APP_ID'];
+const path = require('path'); // Módulo para manipulação de caminhos de arquivos
 
-    requiredVars.forEach((key) => {
-        if (!process.env[key]) {
-            console.error(`Erro: Variável de ambiente ${key} não definida!`);
-            process.exit(1);
-        }
-    });
-};
-validateEnv();
+// Carregar as variáveis de ambiente
+dotenv.config(); // Carrega variáveis de ambiente do arquivo .env para process.env
 
-// Inicializa o Firebase com a chave privada JSON
-admin.initializeApp({
-    credential: admin.credential.cert(
-      require(path.join(__dirname, 'secrets/firebase-credentials.json')) // Caminho corrigido
-    ),
-    databaseURL: process.env.FIREBASE_DATABASE_URL,
-});
+// Verificar se o Firebase já foi inicializado
+if (!admin.apps.length) {
+    try {
+        console.log("Inicializando o Firebase...");
 
-console.log('Firebase inicializado com sucesso!');
+        // Caminho para o arquivo JSON com as credenciais
+        const serviceAccount = require(path.join(__dirname, 'secrets/firebase-credentials.json'));
 
-// Criação do aplicativo Express
-const app = express(); // Adicionado aqui
+        // Inicializa o Firebase com as credenciais fornecidas
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount),
+            databaseURL: process.env.FIREBASE_DATABASE_URL,
+        });
+
+        console.log('Firebase inicializado com sucesso!');
+    } catch (error) {
+        console.error('Erro ao inicializar o Firebase:', error);
+        process.exit(1); // Finaliza o processo se houver erro
+    }
+} else {
+    console.log('Firebase já estava inicializado.');
+}
+const adminRoutes = require('./routes/adminRoutes'); // Rotas específicas para o administrador
+const publicRoutes = require('./routes/publicRoutes'); // Rotas públicas acessíveis a todos
+// Criação do servidor Express
+const app = express();
 
 // Configurações do middleware
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors()); // Habilita CORS para permitir requisições de diferentes origens
+app.use(bodyParser.json()); // Configura o Express para usar body-parser para analisar JSON no corpo das requisições
 
-// Definição de rotas
-app.use('/api/admin', adminRoutes); // Admin routes
-app.use('/api/public', publicRoutes); // Public routes
+// Definir as rotas
+app.use('/api/admin', adminRoutes); // Associa rotas de administrador ao caminho /api/admin
+app.use('/api/public', publicRoutes); // Associa rotas públicas ao caminho /api/public
 
 // Tratamento de erros
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Ocorreu um erro interno no servidor' });
+    console.error(err.stack); // Exibe o erro no console
+    res.status(500).json({ error: 'Ocorreu um erro interno no servidor' }); // Retorna uma resposta de erro 500 em JSON
 });
 
-// Porta
-const PORT = process.env.PORT || 3000;
+// Definir a porta do servidor
+const PORT = process.env.PORT || 3000; // Define a porta do servidor a partir da variável de ambiente ou 3000 como padrão
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`); // Exibe mensagem no console indicando que o servidor está rodando
 });
